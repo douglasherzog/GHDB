@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Dorkinho: List dorks",
+      "type": "shell",
+      "command": "python",
+      "args": ["dorkinho.py", "${input:dorkDomain}", "-l"],
+      "options": {
+        "cwd": "${workspaceFolder}/tools"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Dorkinho: Open first dorks (-a)",
+      "type": "shell",
+      "command": "python",
+      "args": ["dorkinho.py", "${input:dorkDomain}", "-a"],
+      "options": {
+        "cwd": "${workspaceFolder}/tools"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Dorkinho: Open exclusive dork (-e)",
+      "type": "shell",
+      "command": "python",
+      "args": ["dorkinho.py", "${input:dorkDomain}", "-e", "${input:dorkName}"],
+      "options": {
+        "cwd": "${workspaceFolder}/tools"
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "dorkDomain",
+      "type": "promptString",
+      "description": "Target domain (ex: example.com)",
+      "default": "example.com"
+    },
+    {
+      "id": "dorkName",
+      "type": "promptString",
+      "description": "Dork name (run 'Dorkinho: List dorks' to see available names)",
+      "default": "documents"
+    }
+  ]
+}

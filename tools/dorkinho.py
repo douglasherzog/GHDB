@@ -5,7 +5,7 @@ parser = argparse.ArgumentParser(prog="Dorkinho", description="Perform Google Do
 parser.add_argument("domain")
 parser.add_argument("-l", "--list", action="store_true", help="list all dorks names")
 parser.add_argument("-a", "--all", action="store_true", help="request all dorks in browser")
-parser.add_argument("-e", "--exc", action="store_true", help="use an exclusive dork")
+parser.add_argument("-e", "--exc", metavar="DORK_NAME", help="use an exclusive dork")
 args = parser.parse_args()
 
 if __name__ == "__main__":
@@ -16,4 +16,4 @@ if __name__ == "__main__":
         if(args.all):
                 dorkinho.all_requests(args.domain)
         if(args.exc):
-                dorkinho.exclusive_dork(args.domain, args.exc)
+                dorkinho.exclusive_dork(args.exc, args.domain)
