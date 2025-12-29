@@ -1,0 +1,17 @@
+services:
+  ghdb:
+    build: .
+    image: ghdb-app:latest
+    container_name: ghdb
+    ports:
+      - "8000:8000"
+    environment:
+      GHDB_ENV: "production"
+      GHDB_SECRET_KEY: "${GHDB_SECRET_KEY}"
+      GHDB_ADMIN_USERNAME: "${GHDB_ADMIN_USERNAME:-admin}"
+      GHDB_ADMIN_PASSWORD: "${GHDB_ADMIN_PASSWORD}"
+      GHDB_SESSION_TTL_SECONDS: "${GHDB_SESSION_TTL_SECONDS:-604800}"
+      GHDB_COOKIE_SECURE: "${GHDB_COOKIE_SECURE:-true}"
+    volumes:
+      - /opt/ghdb/data:/app/ghdb_app/data
+    restart: unless-stopped

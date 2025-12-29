@@ -73,6 +73,40 @@ docker run -d --name ghdb \
 
 Opcao B: Nginx como reverse proxy (porta 80/443), e container na 8000.
 
+## 5) Operacao com docker compose (recomendado)
+
+Se voce preferir nao rodar comandos longos de `docker run`, use o `docker-compose.yml` do repo.
+
+Crie um arquivo `.env` na VM (na mesma pasta do `docker-compose.yml`) com as variaveis:
+
+```bash
+GHDB_SECRET_KEY=coloque-uma-chave-longa-aqui
+GHDB_ADMIN_PASSWORD=mude-essa-senha
+GHDB_ADMIN_USERNAME=admin
+GHDB_SESSION_TTL_SECONDS=604800
+GHDB_COOKIE_SECURE=true
+```
+
+Suba:
+
+```bash
+docker compose up -d --build
+```
+
+## 6) Backup e restore do SQLite
+
+Backup (gera um arquivo em `backups/` dentro do volume):
+
+```bash
+bash ops/backup_db.sh
+```
+
+Restore (use o caminho do arquivo que deseja restaurar):
+
+```bash
+bash ops/restore_db.sh /opt/ghdb/data/backups/app_YYYYMMDD_HHMMSS.db
+```
+
 ## Notas
 
 - A indexacao inicial e feita no primeiro start e pode demorar um pouco.
