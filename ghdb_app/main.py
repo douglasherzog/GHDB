@@ -4,6 +4,7 @@ import json
 import os
 import secrets
 import sqlite3
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Optional
@@ -23,9 +24,17 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 DB_PATH = Path(os.getenv("GHDB_DB_PATH", str(DATA_DIR / "app.db")))
 
-SECRET_KEY = os.getenv("GHDB_SECRET_KEY") or secrets.token_urlsafe(32)
+ENV = (os.getenv("GHDB_ENV") or "development").strip().lower()
+_secret_from_env = os.getenv("GHDB_SECRET_KEY")
+if ENV == "production" and not _secret_from_env:
+    raise RuntimeError("GHDB_SECRET_KEY must be set when GHDB_ENV=production")
+
+SECRET_KEY = _secret_from_env or secrets.token_urlsafe(32)
 COOKIE_NAME = "ghdb_session"
 serializer = URLSafeSerializer(SECRET_KEY, salt="ghdb_session_v1")
+
+SESSION_TTL_SECONDS = int(os.getenv("GHDB_SESSION_TTL_SECONDS", str(60 * 60 * 24 * 7)))
+COOKIE_SECURE = (os.getenv("GHDB_COOKIE_SECURE") or "").strip().lower() in {"1", "true", "yes"} or ENV == "production"
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
@@ -180,6 +189,20 @@ def _get_session_user_id(request: Request) -> Optional[int]:
         data = serializer.loads(token)
     except BadSignature:
         return None
+
+    if not isinstance(data, dict):
+        return None
+
+    iat = data.get("iat")
+    if iat is None:
+        return None
+    try:
+        age = int(time.time()) - int(iat)
+    except (TypeError, ValueError):
+        return None
+    if age < 0 or age > SESSION_TTL_SECONDS:
+        return None
+
     uid = data.get("uid") if isinstance(data, dict) else None
     return int(uid) if uid is not None else None
 
@@ -259,6 +282,11 @@ def help_wizard_page(request: Request, user=Depends(require_user)):
     )
 
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
 @app.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):
     if _get_session_user_id(request) is not None:
@@ -287,9 +315,11 @@ def login(request: Request, username: str = Form(...), password: str = Form(...)
         resp = RedirectResponse(url="/", status_code=303)
         resp.set_cookie(
             COOKIE_NAME,
-            serializer.dumps({"uid": int(row["id"])}),
+            serializer.dumps({"uid": int(row["id"]), "iat": int(time.time())}),
             httponly=True,
             samesite="lax",
+            secure=COOKIE_SECURE,
+            max_age=SESSION_TTL_SECONDS,
         )
         return resp
     finally:
