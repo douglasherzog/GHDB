@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GHDB - Admin / Usuários</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand">GHDB</div>
+        <div class="topbar-actions">
+          <a class="button secondary" href="/">Voltar</a>
+          <form method="post" action="/logout" style="display:inline;">
+            <button type="submit" class="secondary">Sair ({{ user.username }})</button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h1>Admin - Usuários</h1>
+        <p class="muted">Aqui você cria usuários, reseta senhas e ativa/desativa acesso.</p>
+
+        {% if msg %}
+          <div class="alert">{{ msg }}</div>
+        {% endif %}
+      </section>
+
+      <section class="card">
+        <h2>Criar usuário</h2>
+        <form method="post" action="/admin/users/create" class="form grid">
+          <label>
+            Usuário
+            <input name="username" placeholder="ex: cliente01" required />
+          </label>
+          <label>
+            Senha inicial
+            <input type="password" name="password" placeholder="defina uma senha" required />
+          </label>
+          <label style="align-items:center; grid-template-columns: 1fr;">
+            <span class="muted">Permissões</span>
+            <label style="display:flex; gap:8px; align-items:center;">
+              <input type="checkbox" name="is_admin" value="1" />
+              <span>Admin</span>
+            </label>
+          </label>
+          <button type="submit">Criar</button>
+        </form>
+        <p class="muted">Dica: marque <b>Admin</b> somente para pessoas que vão gerenciar usuários.</p>
+      </section>
+
+      <section class="card">
+        <h2>Lista de usuários</h2>
+        <div class="results">
+          {% for u in users %}
+            <div class="result">
+              <div class="result-meta">
+                <span class="badge">ID {{ u.id }}</span>
+                <span><b>{{ u.username }}</b></span>
+                {% if u.is_admin %}
+                  <span class="badge">admin</span>
+                {% endif %}
+                {% if u.is_active %}
+                  <span class="badge">ativo</span>
+                {% else %}
+                  <span class="badge">desativado</span>
+                {% endif %}
+                <span class="muted">criado em {{ u.created_at }}</span>
+              </div>
+
+              <div class="result-actions">
+                <form method="post" action="/admin/users/{{ u.id }}/toggle" style="display:inline;">
+                  {% if u.is_active %}
+                    <button type="submit" class="secondary">Desativar</button>
+                  {% else %}
+                    <button type="submit" class="secondary">Ativar</button>
+                  {% endif %}
+                </form>
+
+                <form method="post" action="/admin/users/{{ u.id }}/reset" style="display:flex; gap:10px; align-items:center;">
+                  <input class="small" type="password" name="new_password" placeholder="nova senha" required />
+                  <button type="submit" class="secondary">Resetar senha</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

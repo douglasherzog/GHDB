@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+*.sqlite3
+.env
+.venv/
+
+# Local MVP scratch folder (kept out of versioning)
+app/

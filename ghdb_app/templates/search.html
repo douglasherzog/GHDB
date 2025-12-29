@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GHDB - Busca</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand">GHDB</div>
+        <div class="topbar-actions">
+          {% if user.is_admin %}
+            <a class="button secondary" href="/admin/users">Admin (Usuários)</a>
+          {% endif %}
+          <form method="post" action="/admin/reindex" style="display:inline;">
+            <button type="submit" class="secondary">Reindexar</button>
+          </form>
+          <form method="post" action="/logout" style="display:inline;">
+            <button type="submit" class="secondary">Sair ({{ user.username }})</button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h1>Busca</h1>
+        <form method="get" action="/search" class="form grid">
+          <label>
+            Query (FTS)
+            <input name="q" value="{{ q }}" placeholder="ex: password OR login" />
+          </label>
+          <label>
+            Fonte
+            <select name="source">
+              <option value="" {% if not source %}selected{% endif %}>Todas</option>
+              <option value="google-dork" {% if source=='google-dork' %}selected{% endif %}>google-dork/</option>
+              <option value="lists" {% if source=='lists' %}selected{% endif %}>lists/</option>
+              <option value="dorks.json" {% if source=='dorks.json' %}selected{% endif %}>tools/lists/dorks.json</option>
+            </select>
+          </label>
+          <button type="submit">Pesquisar</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="row">
+          <h2>Resultados</h2>
+          <div class="muted">{{ hits|length }} itens</div>
+        </div>
+
+        {% if hits|length == 0 %}
+          <p class="muted">Nenhum resultado ainda. Faça uma busca.</p>
+        {% endif %}
+
+        <div class="results">
+          {% for h in hits %}
+            <div class="result">
+              <div class="result-meta">
+                <span class="badge">{{ h.source }}</span>
+                <span class="muted">{{ h.origin }}#{{ h.key }}</span>
+              </div>
+
+              <div class="result-text">{{ h.text }}</div>
+
+              <div class="result-actions">
+                <button type="button" class="secondary" data-action="copy" data-text="{{ h.text|e }}">Copy</button>
+
+                {% if h.source == 'dorks.json' %}
+                  <input class="small" data-action="value" placeholder="domínio/termo (ex: example.com)" />
+                  <a class="button" target="_blank" rel="noreferrer" href="#" data-action="open-template" data-template="{{ h.text|e }}">Abrir</a>
+                {% else %}
+                  <a class="button" target="_blank" rel="noreferrer" href="#" data-action="open-query" data-query="{{ h.text|e }}">Abrir</a>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function openQuery(q) {
+        const url = 'https://www.google.com/search?q=' + encodeURIComponent(q);
+        window.open(url, '_blank', 'noopener');
+      }
+
+      function openTemplate(tpl, value) {
+        const url = '/dorks/open?template=' + encodeURIComponent(tpl) + '&value=' + encodeURIComponent(value || '');
+        window.open(url, '_blank', 'noopener');
+      }
+
+      document.addEventListener('click', (e) => {
+        const el = e.target;
+        if (!(el instanceof HTMLElement)) return;
+
+        const action = el.dataset.action;
+        if (!action) return;
+
+        if (action === 'copy') {
+          const t = el.dataset.text || '';
+          navigator.clipboard.writeText(t);
+          return;
+        }
+
+        if (action === 'open-query') {
+          e.preventDefault();
+          const q = el.dataset.query || '';
+          openQuery(q);
+          return;
+        }
+
+        if (action === 'open-template') {
+          e.preventDefault();
+          const tpl = el.dataset.template || '';
+          const parent = el.closest('.result');
+          const input = parent ? parent.querySelector('input[data-action="value"]') : null;
+          const value = input && input instanceof HTMLInputElement ? input.value : '';
+          openTemplate(tpl, value);
+          return;
+        }
+      });
+    </script>
+  </body>
+</html>
