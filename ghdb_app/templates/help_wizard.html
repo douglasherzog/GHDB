@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GHDB - Ajuda (Wizard)</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand">GHDB</div>
+        <div class="topbar-actions">
+          <a class="button secondary" href="/help">Ajuda (guia rápido)</a>
+          <a class="button secondary" href="/">Voltar</a>
+          <form method="post" action="/logout" style="display:inline;">
+            <button type="submit" class="secondary">Sair ({{ user.username }})</button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h1>Ajuda (Wizard)</h1>
+        <p class="muted">Siga os passos abaixo. Você pode clicar nos exemplos para abrir a busca já preenchida.</p>
+      </section>
+
+      <section class="card" id="step1">
+        <h2>Passo 1 — Faça uma busca</h2>
+        <p class="muted">Clique em um exemplo para ir direto para a busca:</p>
+        <div class="result-actions">
+          <a class="button" href="/search?q=password%20OR%20senha">Exemplo: password OR senha</a>
+          <a class="button" href="/search?q=%22index%20of%22%20AND%20backup">Exemplo: "index of" AND backup</a>
+          <a class="button" href="/search?q=ext%3Asql%20OR%20ext%3Aenv">Exemplo: ext:sql OR ext:env</a>
+        </div>
+      </section>
+
+      <section class="card" id="step2">
+        <h2>Passo 2 — Copie ou abra o resultado</h2>
+        <div class="results">
+          <div class="result">
+            <div class="result-meta"><span class="badge">Copy</span></div>
+            <div class="result-text">Use para copiar o dork e guardar/compartilhar.</div>
+          </div>
+          <div class="result">
+            <div class="result-meta"><span class="badge">Abrir</span></div>
+            <div class="result-text">Use para abrir a pesquisa no Google automaticamente.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="step3">
+        <h2>Passo 3 — Templates (com domínio/termo)</h2>
+        <p class="muted">Quando a fonte for <b>dorks.json</b>, preencha o campo com um domínio/termo antes de abrir.</p>
+        <div class="results">
+          <div class="result">
+            <div class="result-meta"><span class="badge">Exemplo</span></div>
+            <div class="result-text">site:{} ext:pdf</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="step4">
+        <h2>Passo 4 — Boas práticas</h2>
+        <div class="results">
+          <div class="result">
+            <div class="result-meta"><span class="badge">CAPTCHA</span></div>
+            <div class="result-text">Se aparecer CAPTCHA, reduza a frequência e evite automatizar em excesso.</div>
+          </div>
+          <div class="result">
+            <div class="result-meta"><span class="badge">Autorização</span></div>
+            <div class="result-text">Use apenas em escopos permitidos (pentest/bug bounty/ambiente próprio).</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

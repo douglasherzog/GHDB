@@ -243,6 +243,22 @@ def home(request: Request, user=Depends(require_user)):
     )
 
 
+@app.get("/help", response_class=HTMLResponse)
+def help_page(request: Request, user=Depends(require_user)):
+    return templates.TemplateResponse(
+        "help.html",
+        {"request": request, "user": user},
+    )
+
+
+@app.get("/help/wizard", response_class=HTMLResponse)
+def help_wizard_page(request: Request, user=Depends(require_user)):
+    return templates.TemplateResponse(
+        "help_wizard.html",
+        {"request": request, "user": user},
+    )
+
+
 @app.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):
     if _get_session_user_id(request) is not None:

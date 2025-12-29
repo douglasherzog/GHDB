@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GHDB - Ajuda</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand">GHDB</div>
+        <div class="topbar-actions">
+          <a class="button secondary" href="/help/wizard">Ajuda (Wizard)</a>
+          <a class="button secondary" href="/">Voltar</a>
+          <form method="post" action="/logout" style="display:inline;">
+            <button type="submit" class="secondary">Sair ({{ user.username }})</button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h1>Ajuda (guia rápido)</h1>
+        <p class="muted">Este sistema te ajuda a localizar dorks no dataset e abrir a pesquisa no Google.</p>
+      </section>
+
+      <section class="card">
+        <h2>1) Buscar (pesquisa interna)</h2>
+        <p class="muted">Use o campo <b>Query (FTS)</b> para procurar palavras dentro das listas.</p>
+        <div class="results">
+          <div class="result">
+            <div class="result-meta"><span class="badge">Exemplo</span></div>
+            <div class="result-text">password OR senha</div>
+          </div>
+          <div class="result">
+            <div class="result-meta"><span class="badge">Exemplo</span></div>
+            <div class="result-text">"index of" AND backup</div>
+          </div>
+          <div class="result">
+            <div class="result-meta"><span class="badge">Exemplo</span></div>
+            <div class="result-text">ext:sql OR ext:env</div>
+          </div>
+        </div>
+        <p class="muted">Dica: você pode filtrar a <b>Fonte</b> para refinar os resultados.</p>
+      </section>
+
+      <section class="card">
+        <h2>2) Usar resultados</h2>
+        <div class="results">
+          <div class="result">
+            <div class="result-meta"><span class="badge">Copy</span></div>
+            <div class="result-text">Copia o texto do dork para você colar onde quiser.</div>
+          </div>
+          <div class="result">
+            <div class="result-meta"><span class="badge">Abrir</span></div>
+            <div class="result-text">Abre a pesquisa no Google com o dork selecionado.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>3) Templates (tools/lists/dorks.json)</h2>
+        <p class="muted">Alguns itens são templates e pedem um valor (domínio/termo). Exemplo:</p>
+        <div class="result-text">site:{} ext:pdf</div>
+        <p class="muted">Você preenche com <code>example.com</code> e clica em <b>Abrir</b>.</p>
+      </section>
+
+      <section class="card">
+        <h2>Boas práticas</h2>
+        <div class="results">
+          <div class="result">
+            <div class="result-meta"><span class="badge">CAPTCHA</span></div>
+            <div class="result-text">Se você abrir muitas buscas em sequência, o Google pode pedir CAPTCHA. Vá com calma.</div>
+          </div>
+          <div class="result">
+            <div class="result-meta"><span class="badge">Legal/Ética</span></div>
+            <div class="result-text">Use apenas em ambientes autorizados. Você é responsável pelo uso.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
