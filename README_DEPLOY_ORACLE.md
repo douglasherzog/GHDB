@@ -29,14 +29,24 @@ No seu PC (ou na VM, apos clonar o repo), faca build:
 docker build -t ghdb-app:latest .
 ```
 
-Rode definindo credenciais iniciais e uma secret key fixa:
+Crie uma pasta na VM para persistir o banco (SQLite):
+
+```bash
+mkdir -p /opt/ghdb/data
+```
+
+Rode definindo credenciais iniciais, uma secret key fixa e modo producao:
 
 ```bash
 docker run -d --name ghdb \
   -p 8000:8000 \
+  -v /opt/ghdb/data:/app/ghdb_app/data \
+  -e GHDB_ENV="production" \
   -e GHDB_SECRET_KEY="coloque-uma-chave-longa-aqui" \
   -e GHDB_ADMIN_USERNAME="admin" \
   -e GHDB_ADMIN_PASSWORD="mude-essa-senha" \
+  -e GHDB_SESSION_TTL_SECONDS="604800" \
+  -e GHDB_COOKIE_SECURE="true" \
   ghdb-app:latest
 ```
 
@@ -51,9 +61,13 @@ Opcao A: Rodar o container na porta 80
 ```bash
 docker run -d --name ghdb \
   -p 80:8000 \
+  -v /opt/ghdb/data:/app/ghdb_app/data \
+  -e GHDB_ENV="production" \
   -e GHDB_SECRET_KEY="coloque-uma-chave-longa-aqui" \
   -e GHDB_ADMIN_USERNAME="admin" \
   -e GHDB_ADMIN_PASSWORD="mude-essa-senha" \
+  -e GHDB_SESSION_TTL_SECONDS="604800" \
+  -e GHDB_COOKIE_SECURE="true" \
   ghdb-app:latest
 ```
 
@@ -63,4 +77,5 @@ Opcao B: Nginx como reverse proxy (porta 80/443), e container na 8000.
 
 - A indexacao inicial e feita no primeiro start e pode demorar um pouco.
 - Para reindexar, use o botao "Reindexar" na UI.
-- Para producao, use uma `GHDB_SECRET_KEY` fixa e forte.
+- Para producao, use `GHDB_ENV=production` e uma `GHDB_SECRET_KEY` fixa e forte.
+- O banco fica em `GHDB_DB_PATH` (default: `/app/ghdb_app/data/app.db`). O exemplo acima monta volume para persistir.
