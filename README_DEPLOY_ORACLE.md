@@ -165,6 +165,22 @@ Restore (use o caminho do arquivo que deseja restaurar):
 bash ops/restore_db.sh /opt/ghdb/data/backups/app_YYYYMMDD_HHMMSS.db
 ```
 
+## 6.1) Reset de senha do admin (pos-boot)
+
+Importante: `GHDB_ADMIN_PASSWORD` so e usado para criar o admin no primeiro start. Depois disso a senha fica persistida no SQLite.
+
+Windows (sem PowerShell, para evitar bloqueio de antivirus):
+
+```bat
+scripts\reset-admin-password.cmd NOVA_SENHA_AQUI
+```
+
+Linux/VM:
+
+```bash
+bash ops/reset_admin_password.sh "NOVA_SENHA_AQUI"
+```
+
 ## Notas
 
 - A indexacao inicial e feita no primeiro start e pode demorar um pouco.
