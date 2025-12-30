@@ -12,6 +12,21 @@ function ghdbOpenTemplate(tpl, value) {
   window.open(url, '_blank', 'noopener');
 }
 
+let ghdbToastTimer = null;
+
+function ghdbToast(message) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.classList.add('show');
+
+  if (ghdbToastTimer) window.clearTimeout(ghdbToastTimer);
+  ghdbToastTimer = window.setTimeout(() => {
+    toast.classList.remove('show');
+  }, 1600);
+}
+
 document.addEventListener('click', (e) => {
   const el = e.target;
   if (!(el instanceof HTMLElement)) return;
@@ -21,7 +36,10 @@ document.addEventListener('click', (e) => {
 
   if (action === 'copy') {
     const t = el.dataset.text || '';
-    navigator.clipboard.writeText(t);
+    navigator.clipboard
+      .writeText(t)
+      .then(() => ghdbToast('Copiado para a área de transferência.'))
+      .catch(() => ghdbToast('Não foi possível copiar automaticamente. Selecione e copie manualmente.'));
     return;
   }
 

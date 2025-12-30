@@ -28,10 +28,14 @@
     <main class="container">
       <section class="card">
         <h1>Busca</h1>
+        <p class="muted">
+          Dica: você pode buscar por palavras, trechos e operadores. O campo <b>Query (FTS)</b> usa busca full-text (FTS5) e suporta operadores como <code>OR</code>.
+        </p>
         <form method="get" action="/search" class="form grid">
           <label>
             Query (FTS)
             <input name="q" value="{{ q }}" placeholder="ex: password OR login" />
+            <div class="helper">Use termos que apareçam nos dorks. Ex: <code>intitle:</code>, <code>inurl:</code>, <code>ext:</code>, <code>site:</code>, <code>password</code>.</div>
           </label>
           <label>
             Fonte
@@ -41,9 +45,18 @@
               <option value="lists" {% if source=='lists' %}selected{% endif %}>lists/</option>
               <option value="dorks.json" {% if source=='dorks.json' %}selected{% endif %}>tools/lists/dorks.json</option>
             </select>
+            <div class="helper">Filtre para encontrar dorks de uma origem específica (útil para manter consistência do acervo).</div>
           </label>
           <button type="submit">Pesquisar</button>
         </form>
+        <div class="callout">
+          <div class="callout-title">Como usar os resultados</div>
+          <div class="callout-body">
+            <div><b>Copy</b>: copia o dork para você colar em outra ferramenta.</div>
+            <div><b>Abrir</b>: abre a busca já montada em uma nova aba.</div>
+            <div><b>tools/lists/dorks.json</b>: alguns templates pedem um valor (ex: domínio/termo) antes de abrir.</div>
+          </div>
+        </div>
       </section>
 
       <section class="card">
@@ -53,7 +66,21 @@
         </div>
 
         {% if hits|length == 0 %}
-          <p class="muted">Nenhum resultado ainda. Faça uma busca.</p>
+          {% if q %}
+            <div class="empty">
+              <div class="empty-title">Nenhum resultado encontrado</div>
+              <div class="empty-body muted">
+                Tente simplificar a query (ex: usar menos termos), trocar a <b>Fonte</b>, ou buscar por um operador específico (ex: <code>inurl:</code>, <code>intitle:</code>).
+              </div>
+            </div>
+          {% else %}
+            <div class="empty">
+              <div class="empty-title">Faça uma busca para começar</div>
+              <div class="empty-body muted">
+                Sugestões rápidas: <code>site:</code>, <code>ext:sql</code>, <code>intitle:"index of"</code>, <code>inurl:admin</code>.
+              </div>
+            </div>
+          {% endif %}
         {% endif %}
 
         <div class="results">
@@ -71,6 +98,7 @@
 
                 {% if h.source == 'dorks.json' %}
                   <input class="small" data-action="value" placeholder="domínio/termo (ex: example.com)" />
+                  <span class="helper-inline muted">Preencha antes de abrir o template.</span>
                   <a class="button" target="_blank" rel="noreferrer" href="#" data-action="open-template" data-template="{{ h.text|e }}">Abrir</a>
                 {% else %}
                   <a class="button" target="_blank" rel="noreferrer" href="#" data-action="open-query" data-query="{{ h.text|e }}">Abrir</a>
@@ -81,6 +109,8 @@
         </div>
       </section>
     </main>
+
+    <div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
     <script src="/static/search.js" defer></script>
   </body>
 </html>
