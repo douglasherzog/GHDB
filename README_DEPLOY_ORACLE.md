@@ -80,8 +80,15 @@ Se voce preferir nao rodar comandos longos de `docker run`, use o `docker-compos
 No Windows, o jeito mais facil e usar os scripts em `scripts/` para criar/editar o `.env` (que fica gitignored) e subir o compose.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\env-edit.ps1
-powershell -ExecutionPolicy Bypass -File .\scripts\up.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\env-edit.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\up.ps1
+```
+
+Se o seu antivirus bloquear scripts `.ps1`, use a alternativa em `.cmd`:
+
+```bat
+scripts\env-edit.cmd
+scripts\up.cmd
 ```
 
 Crie um arquivo `.env` na VM (na mesma pasta do `docker-compose.yml`) com as variaveis:
@@ -96,6 +103,9 @@ GHDB_ENABLE_PROXY_HEADERS=true
 # Opcional: restrinja hosts aceitos (quando tiver dominio, inclua seu host)
 # Ex: GHDB_ALLOWED_HOSTS=IP_DA_VM,ghdb.seudominio.com
 GHDB_ALLOWED_HOSTS=
+
+# Se a porta 80 estiver ocupada (comum no Windows), use 8080 e acesse http://localhost:8080
+CADDY_HTTP_PORT=80
 ```
 
 Suba:
