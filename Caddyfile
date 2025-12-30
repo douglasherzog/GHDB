@@ -6,7 +6,7 @@
     X-Frame-Options "DENY"
     Referrer-Policy "no-referrer"
     Permissions-Policy "geolocation=(), microphone=(), camera=()"
-    Content-Security-Policy "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; style-src 'self'; script-src 'self' 'unsafe-inline'"
+    Content-Security-Policy "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; style-src 'self'; script-src 'self'"
   }
 
   reverse_proxy ghdb:8000
