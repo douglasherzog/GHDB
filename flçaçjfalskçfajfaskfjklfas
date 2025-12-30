@@ -1,0 +1,21 @@
+[1mdiff --git a/scripts/env-edit.ps1 b/scripts/env-edit.ps1[m
+[1mdeleted file mode 100644[m
+[1mindex 667c5a7..0000000[m
+[1m--- a/scripts/env-edit.ps1[m
+[1m+++ /dev/null[m
+[36m@@ -1,15 +0,0 @@[m
+[31m-$ErrorActionPreference = 'Stop'[m
+[31m-[m
+[31m-$RepoRoot = Split-Path -Parent $PSScriptRoot[m
+[31m-$EnvExample = Join-Path $RepoRoot 'env.example'[m
+[31m-$EnvFile = Join-Path $RepoRoot '.env'[m
+[31m-[m
+[31m-if (!(Test-Path $EnvFile)) {[m
+[31m-  if (Test-Path $EnvExample) {[m
+[31m-    Copy-Item -Force $EnvExample $EnvFile[m
+[31m-  } else {[m
+[31m-    New-Item -ItemType File -Force $EnvFile | Out-Null[m
+[31m-  }[m
+[31m-}[m
+[31m-[m
+[31m-notepad $EnvFile[m
