@@ -77,6 +77,13 @@ Opcao B: Nginx como reverse proxy (porta 80/443), e container na 8000.
 
 Se voce preferir nao rodar comandos longos de `docker run`, use o `docker-compose.yml` do repo.
 
+No Windows, o jeito mais facil e usar os scripts em `scripts/` para criar/editar o `.env` (que fica gitignored) e subir o compose.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\env-edit.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\up.ps1
+```
+
 Crie um arquivo `.env` na VM (na mesma pasta do `docker-compose.yml`) com as variaveis:
 
 ```bash
