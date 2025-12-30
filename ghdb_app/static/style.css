@@ -219,6 +219,12 @@ button.secondary:hover, .button.secondary:hover {
   min-width: 92px;
 }
 
+.result-actions input.small {
+  width: 92px;
+  min-width: 92px;
+  flex: 0 0 92px;
+}
+
 .callout {
   margin-top: 14px;
   border: 1px solid var(--border);
