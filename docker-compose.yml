@@ -3,8 +3,8 @@ services:
     build: .
     image: ghdb-app:latest
     container_name: ghdb
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     environment:
       GHDB_ENV: "production"
       GHDB_SECRET_KEY: "${GHDB_SECRET_KEY}"
@@ -15,3 +15,20 @@ services:
     volumes:
       - /opt/ghdb/data:/app/ghdb_app/data
     restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    container_name: ghdb-caddy
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - ghdb
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:

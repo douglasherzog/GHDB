@@ -14,8 +14,8 @@ O codigo da aplicacao fica na pasta `ghdb_app/`.
 - Abra portas no Security List / NSG:
   - TCP 22 (SSH)
   - TCP 80 (HTTP) (recomendado)
-  - TCP 443 (HTTPS) (opcional)
-  - ou TCP 8000 (se voce quiser expor direto, nao recomendado)
+  - TCP 443 (HTTPS) (quando voce tiver dominio)
+  - Evite expor TCP 8000 diretamente (use reverse proxy)
 
 ## 2) Instalar Docker na VM
 
@@ -84,7 +84,7 @@ GHDB_SECRET_KEY=coloque-uma-chave-longa-aqui
 GHDB_ADMIN_PASSWORD=mude-essa-senha
 GHDB_ADMIN_USERNAME=admin
 GHDB_SESSION_TTL_SECONDS=604800
-GHDB_COOKIE_SECURE=true
+GHDB_COOKIE_SECURE=false
 ```
 
 Suba:
@@ -92,6 +92,19 @@ Suba:
 ```bash
 docker compose up -d --build
 ```
+
+Observacao (sem dominio/HTTPS):
+
+- Enquanto estiver usando apenas HTTP, mantenha `GHDB_COOKIE_SECURE=false`.
+- Quando voce tiver um dominio e ativar HTTPS, troque para `GHDB_COOKIE_SECURE=true`.
+
+## 5.1) Reverse proxy HTTP (Plano A, sem dominio)
+
+O `docker-compose.yml` sobe o app em uma rede interna e expõe apenas a porta 80 via Caddy.
+
+Abra no browser:
+
+- `http://IP_DA_VM/login`
 
 ## 6) Backup e restore do SQLite
 
