@@ -85,6 +85,10 @@ GHDB_ADMIN_PASSWORD=mude-essa-senha
 GHDB_ADMIN_USERNAME=admin
 GHDB_SESSION_TTL_SECONDS=604800
 GHDB_COOKIE_SECURE=false
+GHDB_ENABLE_PROXY_HEADERS=true
+# Opcional: restrinja hosts aceitos (quando tiver dominio, inclua seu host)
+# Ex: GHDB_ALLOWED_HOSTS=IP_DA_VM,ghdb.seudominio.com
+GHDB_ALLOWED_HOSTS=
 ```
 
 Suba:
@@ -105,6 +109,30 @@ O `docker-compose.yml` sobe o app em uma rede interna e expõe apenas a porta 80
 Abra no browser:
 
 - `http://IP_DA_VM/login`
+
+## 7) Checklist final (producao)
+
+- Portas/Firewall (NSG):
+  - 22 (SSH) apenas do seu IP, se possivel
+  - 80 (HTTP)
+  - 443 (HTTPS) quando tiver dominio
+  - nao expor 8000
+- Segredos:
+  - `GHDB_SECRET_KEY` longo e aleatorio (fixo)
+  - `GHDB_ADMIN_PASSWORD` forte e guardado em lugar seguro
+- Proxy:
+  - `GHDB_ENABLE_PROXY_HEADERS=true` quando estiver atras do Caddy/Nginx (compose ja deixa isso habilitado)
+  - `GHDB_ALLOWED_HOSTS` opcional; quando tiver dominio, configure para evitar Host header attacks
+- Sessao:
+  - ajuste `GHDB_SESSION_TTL_SECONDS` conforme politica (ex: 86400 para 1 dia)
+  - em HTTP (sem dominio), `GHDB_COOKIE_SECURE=false`
+  - em HTTPS, `GHDB_COOKIE_SECURE=true`
+- Operacao:
+  - ver status: `docker compose ps`
+  - logs: `docker compose logs -f --tail=200`
+  - health: `curl -i http://127.0.0.1/health` (na VM)
+- Backup:
+  - rode `bash ops/backup_db.sh` periodicamente e copie o arquivo para fora da VM
 
 ## 6) Backup e restore do SQLite
 

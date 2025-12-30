@@ -12,6 +12,8 @@ services:
       GHDB_ADMIN_PASSWORD: "${GHDB_ADMIN_PASSWORD}"
       GHDB_SESSION_TTL_SECONDS: "${GHDB_SESSION_TTL_SECONDS:-604800}"
       GHDB_COOKIE_SECURE: "${GHDB_COOKIE_SECURE:-true}"
+      GHDB_ENABLE_PROXY_HEADERS: "${GHDB_ENABLE_PROXY_HEADERS:-true}"
+      GHDB_ALLOWED_HOSTS: "${GHDB_ALLOWED_HOSTS:-}"
     volumes:
       - /opt/ghdb/data:/app/ghdb_app/data
     restart: unless-stopped

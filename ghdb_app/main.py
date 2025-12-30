@@ -15,6 +15,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from itsdangerous import BadSignature, URLSafeSerializer
 from passlib.context import CryptContext
+from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
@@ -39,6 +41,17 @@ COOKIE_SECURE = (os.getenv("GHDB_COOKIE_SECURE") or "").strip().lower() in {"1",
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 app = FastAPI()
+
+ENABLE_PROXY_HEADERS = (os.getenv("GHDB_ENABLE_PROXY_HEADERS") or "").strip().lower() in {"1", "true", "yes"}
+if ENABLE_PROXY_HEADERS:
+    app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
+
+_allowed_hosts_raw = (os.getenv("GHDB_ALLOWED_HOSTS") or "").strip()
+if _allowed_hosts_raw:
+    allowed_hosts = [h.strip() for h in _allowed_hosts_raw.split(",") if h.strip()]
+    if allowed_hosts:
+        app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
+
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
